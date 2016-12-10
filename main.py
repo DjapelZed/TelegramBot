@@ -14,6 +14,8 @@ def handle_text(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Пришло сообщение")
     logs(message)
+    if message.text:
+        log_mess(message)
 
 @bot.message_handler(content_types=["document"])
 def handle_doc(message):
@@ -38,7 +40,17 @@ def handle_photo(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Пришло фото")
     logs(message)
+    if message.photo:
+        log_photo(message)
 
+def log_photo(message):
+    print('File_ID: {0}'.format(message.photo[1].file_id))
+    print('Photo_Size(WxH): {0}x{1}'.format(message.photo[1].width, message.photo[1].height))
+    print('Photo_Size: {0}'.format(message.photo[1].file_size))
+    print(message.photo[0])
+
+def log_mess(message):
+    print('Message: {0}'.format(message.text.encode('utf-8').decode('utf-8')))
 
 def logs(message):
     from datetime import datetime
@@ -48,6 +60,5 @@ def logs(message):
     print('F_Name: {0}'.format(message.chat.first_name))
     print('L_Name: {0}'.format(message.chat.last_name))
     print('ID: {0}'.format(message.chat.id))
-    print('Message: {0}'.format(message.text.encode('utf-8')))
 
 bot.polling(none_stop=True, interval=0)
