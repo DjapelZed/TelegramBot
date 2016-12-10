@@ -14,6 +14,8 @@ def handle_text(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Пришло сообщение")
     logs(message)
+    if constants.translate:
+        trans(message)
     if message.text[0] == '/':
         print('!!!Пришла комманда!!!')
         commands(message)
@@ -47,6 +49,8 @@ def handle_photo(message):
         log_photo(message)
 
 
+
+#~~~~~~~~~~~~~~COMMANDS~~~~~~~~~~~~~~~
 def commands(message):
     if message.text == '/help':
         bot.send_message(message.chat.id,
@@ -56,6 +60,28 @@ def commands(message):
                                           'Я еще маленький, но я буду расти.\n'
                                           'Если ты хочешь помочь моему создателю(не материально, а умственно (разрабатывать меня(да, это скобки в скобках)), то пиши Максу(@kushnirov)\n'
                                           '🐍🐍🐍Пока!🐍🐍🐍'.format(message.chat.first_name))
+    elif message.text == '/translate':
+        constants.translate = True
+        print('Translate mode ON')
+        bot.send_message(message.chat.id, 'Переведено сервисом «Яндекс.Переводчик»\n'
+                                          'http://translate.yandex.ru/')
+        bot.send_message(message.chat.id, 'Ты активировал режим переводчика!\n'
+                                          'Теперь просто вводи текст на русском, а я буду присылать такой же текст на английском')
+
+
+def trans(message):
+    import requests
+    import json
+    url = 'https://translate.yandex.net/api/v1.5/tr.json/translate?'
+    key = constants.key
+    text = message.text
+    lang = 'ru-en'
+    r = requests.post(url, data={'key': key, 'text': text, 'lang': lang})
+    string = json.loads(r.text)
+    # Выводим результат
+    bot.send_message(message.chat.id, string['text'][0])
+    print('Ответ: {0}'.format(string['text'][0]))
+
 # ~~~~~~~~~~~~~~~LOG~~~~~~~~~~~~~~~~~~
 def log_photo(message):
     print('File_ID: {0}'.format(message.photo[1].file_id))
