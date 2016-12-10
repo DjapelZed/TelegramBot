@@ -14,6 +14,9 @@ def handle_text(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Пришло сообщение")
     logs(message)
+    if message.text[0] == '/':
+        print('!!!Пришла комманда!!!')
+        commands(message)
     if message.text:
         log_mess(message)
 
@@ -43,15 +46,23 @@ def handle_photo(message):
     if message.photo:
         log_photo(message)
 
+
+def commands(message):
+    if message.text == '/help':
+        bot.send_message(message.chat.id,
+                                          'Привет!\n'
+                                          'Это я, Питончик (оригинальное имя для меня придумали однако)!\n'
+                                          '{0}, если у тебя есть оригинальные идеи как бы меня усовершенствовать, то пиши Максиму (@kushnirov)\n'
+                                          'Я еще маленький, но я буду расти.\n'
+                                          'Если ты хочешь помочь моему создателю(не материально, а умственно (разрабатывать меня(да, это скобки в скобках)), то пиши Максу(@kushnirov)\n'
+                                          '🐍🐍🐍Пока!🐍🐍🐍'.format(message.chat.first_name))
+# ~~~~~~~~~~~~~~~LOG~~~~~~~~~~~~~~~~~~
 def log_photo(message):
     print('File_ID: {0}'.format(message.photo[1].file_id))
     print('Photo_Size(WxH): {0}x{1}'.format(message.photo[1].width, message.photo[1].height))
-    print('Photo_Size: {0}'.format(message.photo[1].file_size))
-    print(message.photo[0])
-
+    print('Photo_Size: {0}'.format(message.photo[0].file_size))
 def log_mess(message):
     print('Message: {0}'.format(message.text.encode('utf-8').decode('utf-8')))
-
 def logs(message):
     from datetime import datetime
     date = datetime.now()
