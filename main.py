@@ -59,28 +59,33 @@ def commands(message):
                                           '{0}, если у тебя есть оригинальные идеи как бы меня усовершенствовать, то пиши Максиму (@kushnirov)\n'
                                           'Я еще маленький, но я буду расти.\n'
                                           'Если ты хочешь помочь моему создателю(не материально, а умственно (разрабатывать меня(да, это скобки в скобках)), то пиши Максу(@kushnirov)\n'
-                                          '🐍🐍🐍Пока!🐍🐍🐍'.format(message.chat.first_name))
+                                          '🐍🐍🐍🐍🐍🐍'.format(message.chat.first_name))
+
+    elif message.text == '/translate' and constants.translate:
+        print('Translate mode OFF')
+        bot.send_message(message.chat.id, 'Режим переводчика выключен!')
+        constants.translate = False
+
     elif message.text == '/translate':
         constants.translate = True
         print('Translate mode ON')
         bot.send_message(message.chat.id, 'Переведено сервисом «Яндекс.Переводчик»\n'
                                           'http://translate.yandex.ru/')
         bot.send_message(message.chat.id, 'Ты активировал режим переводчика!\n'
-                                          'Теперь просто вводи текст на русском, а я буду присылать такой же текст на английском')
+                                          'Теперь просто вводи текст на русском, а я буду присылать такой же текст на английском. Чтобы выключить режим переводчика вбей еще раз эту комманду - /translate')
 
 
 def trans(message):
-    import requests
-    import json
-    url = 'https://translate.yandex.net/api/v1.5/tr.json/translate?'
-    key = constants.key
-    text = message.text
-    lang = 'ru-en'
-    r = requests.post(url, data={'key': key, 'text': text, 'lang': lang})
-    string = json.loads(r.text)
-    # Выводим результат
-    bot.send_message(message.chat.id, string['text'][0])
-    print('Ответ: {0}'.format(string['text'][0]))
+    if constants.translate:
+        import requests
+        import json
+        key = constants.key
+        text = message.text
+        lang = 'ru-en'
+        r = requests.post(constants.url, data={'key': key, 'text': text, 'lang': lang})
+        string = json.loads(r.text)
+        bot.send_message(message.chat.id, string['text'][0])
+        print('Ответ: {0}'.format(string['text'][0]))
 
 # ~~~~~~~~~~~~~~~LOG~~~~~~~~~~~~~~~~~~
 def log_photo(message):
