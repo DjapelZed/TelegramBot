@@ -1,9 +1,11 @@
 # _*_ coding: utf-8 _*_
 from telebot import TeleBot
 import constants
+import variables
 
 bot = TeleBot(constants.token)
 
+# ~~~~~~~~~~~~~~COMMANDS~~~~~~~~~~~~~~~
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
@@ -32,7 +34,7 @@ def handle_help(message):
 def handle_translate(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("COMMAND TRANSLATE")
-    if message.text == '/translate' and constants.translate:
+    if message.text == '/translate' and variables.translate:
         print('Translate mode OFF')
         bot.send_message(message.chat.id, 'Режим переводчика выключен!')
         constants.translate = False
@@ -52,7 +54,7 @@ def handle_text(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Message")
     logs(message)
-    if constants.translate:
+    if variables.translate:
         translate(message)
     if message.text:
         log_mess(message)
@@ -63,6 +65,9 @@ def handle_doc(message):
     print('\n~~~~~~~~~~~~~~~~~~~')
     print("Received a DOCUMENT")
     logs(message)
+    print(message.document)
+    if message.document:
+        pass
 
 
 @bot.message_handler(content_types=["audio"])
@@ -87,18 +92,12 @@ def handle_photo(message):
     if message.photo:
         log_photo(message)
 
-
-# ~~~~~~~~~~~~~~COMMANDS~~~~~~~~~~~~~~~
-
-
-
-
 # ~~~~~~~~~~~~~TRANSLATE~~~~~~~~~~~~~~~
 def translate(message):
-    if constants.translate:
+    if variables.translate:
         import requests
         import json
-        url = constants.url
+        url = variables.translate_url
         key = constants.key
         text = message.text
         lang = 'ru-en'
@@ -117,7 +116,7 @@ def log_photo(message):
 
 
 def log_mess(message):
-    print('Message: {0}'.format(message.text.encode('utf-8').decode()))
+    print('Message: {0}'.format(message.text.encode('utf-8')))
 
 
 def logs(message):
