@@ -1,7 +1,11 @@
 # _*_ coding: utf-8 _*_
 from telebot import TeleBot
+from datetime import datetime
+import requests
+import json
 import constants
 import variables
+
 
 bot = TeleBot(constants.token)
 
@@ -95,17 +99,14 @@ def handle_photo(message):
 # ~~~~~~~~~~~~~TRANSLATE~~~~~~~~~~~~~~~
 def translate(message):
     if variables.translate:
-        import requests
-        import json
         url = variables.translate_url
         key = constants.key
         text = message.text
         lang = 'ru-en'
-        r = requests.post(url, data={'key': key, 'text': text, 'lang': lang})
-        # Выводим результат
-        string = json.loads(r.text)
-        bot.send_message(message.chat.id, string['text'])
-        print('Answer: {0}'.format(string['text'][0]))
+        request = requests.post(url, data={'key': key, 'text': text, 'lang': lang})
+        translated_string = json.loads(request.text)
+        bot.send_message(message.chat.id, translated_string['text'])
+        print('Answer: {0}'.format(translated_string['text'][0]))
 
 
 # ~~~~~~~~~~~~~~~LOG~~~~~~~~~~~~~~~~~~
@@ -120,7 +121,6 @@ def log_mess(message):
 
 
 def logs(message):
-    from datetime import datetime
     date = datetime.now()
     print(date)
     print('Username: {0}'.format(message.chat.username))
